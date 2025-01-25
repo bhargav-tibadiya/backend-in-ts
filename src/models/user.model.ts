@@ -1,5 +1,6 @@
 // Packages
 import mongoose, { Schema } from "mongoose";
+const bcrypt = require('bcryptjs')
 
 // Types & Constant
 import { MTUser } from "../types/models";
@@ -56,6 +57,19 @@ const UserSchema: Schema = new Schema<MTUser>(
     timestamps: true,
   }
 );
+
+UserSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
+    return next();
+  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
+UserSchema.methods.matchPassword = async function (enteredPassword: string) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
 
 const User = mongoose.model<MTUser>("User", UserSchema);
 export default User;

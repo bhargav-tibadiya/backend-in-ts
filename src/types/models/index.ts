@@ -10,6 +10,7 @@ import { Document } from "mongoose";
 
 // --> USER.MODEL
 export interface MTUser extends Document {
+  // Constants
   name: string;
   email: string;
   password: string;
@@ -20,4 +21,6 @@ export interface MTUser extends Document {
   role: "User" | "Admin";
   createdAt: Date;
   updatedAt: Date;
+  // Functions
+  matchPassword(enteredPassword: string): Promise<boolean>;
 }
