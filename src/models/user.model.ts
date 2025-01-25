@@ -1,9 +1,12 @@
 // Packages
 import mongoose, { Schema } from "mongoose";
-const bcrypt = require('bcryptjs')
+import bcrypt from 'bcryptjs'
+import jwt from 'jsonwebtoken'
+import dotenv from "dotenv";
+dotenv.config();
 
 // Types & Constant
-import { MTUser } from "../types/models";
+import { ExpiresInType, MTUser } from "../types/models";
 
 
 const UserSchema: Schema = new Schema<MTUser>(
@@ -63,12 +66,24 @@ UserSchema.pre('save', async function (next) {
     return next();
   }
   const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
+  this.password = await bcrypt.hash(this.password as string, salt);
   next();
 });
 
 UserSchema.methods.matchPassword = async function (enteredPassword: string) {
   return await bcrypt.compare(enteredPassword, this.password);
+};
+
+UserSchema.methods.getSignedToken = function () {
+  const payload = {
+    name: this.name,
+    email: this.email,
+    id: this._id,
+    mobile: this.mobile
+  }
+  const secret = process.env.JWT_SECRET
+  const config: jwt.SignOptions = { expiresIn: process.env.JWT_EXPIRE as ExpiresInType }
+  return jwt.sign(payload, secret, config);
 };
 
 const User = mongoose.model<MTUser>("User", UserSchema);

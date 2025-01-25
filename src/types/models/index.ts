@@ -9,6 +9,7 @@ import { Document } from "mongoose";
 
 
 // --> USER.MODEL
+export type ExpiresInType = `${number}min`
 export interface MTUser extends Document {
   // Constants
   name: string;
@@ -23,4 +24,5 @@ export interface MTUser extends Document {
   updatedAt: Date;
   // Functions
   matchPassword(enteredPassword: string): Promise<boolean>;
+  getSignedToken(): string;
 }

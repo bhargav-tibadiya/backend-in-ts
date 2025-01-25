@@ -39,9 +39,17 @@ export const loginUser = async (req: LoginUserRequest, res: ServerResponse) => {
       return res.status(STATUS.UNAUTHORIZED).json(response);
     }
 
+    const token = selectedUser.getSignedToken()
+    const userInfoWithToken = { ...selectedUser, token: token }
+
+    const cookieOptions = {
+      httpOnly: true,
+      expires: new Date(Date.now() + 60 * 60 * 1000),
+    };
+
     logger.info(`User logged in successfully: ${email}`);
-    const response = responseCreator(STATUS.OK, MESSAGES.USER_AUTHENTICATED, true, selectedUser)
-    return res.status(STATUS.OK).json(response);
+    const response = responseCreator(STATUS.OK, MESSAGES.USER_AUTHENTICATED, true, userInfoWithToken)
+    return res.status(STATUS.OK).cookie('token', token, cookieOptions).json(response);
 
   } catch (error: any) {
     logger.error(`Error in loginUser: ${error.message}`);
