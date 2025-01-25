@@ -10,7 +10,6 @@ const logger = createLogger({
   level: "info",
   format: combine(
     timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
-    colorize(),
     customFormat
   ),
   transports: [

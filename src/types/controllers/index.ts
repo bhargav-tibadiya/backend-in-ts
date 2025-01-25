@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 
 export interface ServerResponse extends Response {
-  code: number,
-  message: string,
-  success: boolean,
-  data: Record<string, any>
+  code?: number;
+  message?: string;
+  success?: boolean;
+  data?: Record<string, any>;
 }
 
 // --> CONTROLLER.USER.LOGIN

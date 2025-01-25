@@ -83,7 +83,7 @@ UserSchema.methods.getSignedToken = function () {
   }
   const secret = process.env.JWT_SECRET
   const config: jwt.SignOptions = { expiresIn: process.env.JWT_EXPIRE as ExpiresInType }
-  return jwt.sign(payload, secret, config);
+  return jwt.sign(payload, secret as jwt.Secret, config);
 };
 
 const User = mongoose.model<MTUser>("User", UserSchema);

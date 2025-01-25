@@ -6,9 +6,11 @@ import dotenv from "dotenv";
 // Utils & Config
 import { connect } from "./config/db";
 
-// Types
+// Routes
+import AuthRoutes from "./routes/auth.routes"
 
 // Constant
+import { ROUTES } from "./utils/constants/routes";
 
 // Setup Environment
 dotenv.config();
@@ -23,7 +25,10 @@ connect()
 app.use(express.json());
 app.use(cookieParser())
 
+
 // Routes
+app.use(ROUTES.AUTH.BASE, AuthRoutes);
+
 app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to the TypeScript Node.js backend!");
 });
